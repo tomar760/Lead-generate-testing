@@ -1,1 +1,1934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Employee Dashboard V2 — Dainik Automates</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a080f; --bg2:#110d1f; --bg3:#1a1030;
+  --purple:#8b5cf6; --purple2:#a78bfa; --purple3:#c084fc;
+  --cyan:#60a5fa; --green:#34d399; --orange:#fb923c;
+  --pink:#f472b6; --yellow:#fbbf24; --teal:#2dd4bf;
+  --text:#e8e8f0; --mid:#9ca3af; --dim:#6b7280;
+  --border:rgba(139,92,246,0.15); --border2:rgba(139,92,246,0.25);
+}
+html,body{height:100%;}
+body{
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);
+  display:grid;grid-template-columns:240px 1fr;
+  min-height:100vh;overflow-x:hidden;
+}
+.sidebar{
+  background:linear-gradient(180deg,#0d0a1a,#110d1f);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;
+}
+.brand{
+  padding:18px 18px 14px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.brand-logo{
+  width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,var(--purple),var(--purple3));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:900;font-size:14px;color:#fff;
+  box-shadow:0 0 20px rgba(139,92,246,0.4);
+}
+.brand-name{font-size:14px;font-weight:800;color:var(--purple2);letter-spacing:0.3px;}
+.brand-sub{font-size:9.5px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;}
+.nav-section-title{
+  font-size:9px;font-weight:700;color:var(--dim);
+  letter-spacing:1.5px;text-transform:uppercase;
+  padding:16px 18px 6px;
+}
+.nav{flex:1;overflow-y:auto;padding:6px 10px 20px;}
+.nav::-webkit-scrollbar{width:4px;}
+.nav::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.25);border-radius:4px;}
+.nav a{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:8px;margin-bottom:2px;
+  font-size:13px;color:var(--mid);font-weight:500;
+  cursor:pointer;transition:all 0.15s;text-decoration:none;
+}
+.nav a:hover{background:rgba(139,92,246,0.07);color:var(--text);}
+.nav a.active{
+  background:linear-gradient(90deg,rgba(139,92,246,0.18),rgba(139,92,246,0.05));
+  color:var(--purple2);font-weight:700;
+  border-left:3px solid var(--purple2);padding-left:9px;
+}
+.nav a .ico{width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.nav a .badge{
+  margin-left:auto;background:rgba(139,92,246,0.2);
+  color:var(--purple2);font-size:9px;font-weight:700;
+  padding:2px 6px;border-radius:10px;
+}
+.user-card{
+  padding:14px 14px;border-top:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;color:#fff;
+}
+.u-info{flex:1;min-width:0;}
+.u-name{font-size:12px;font-weight:700;color:var(--text);}
+.u-role{font-size:10px;color:var(--dim);}
+.ai-badge{
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;
+  background:rgba(52,211,153,0.15);color:var(--green);
+  border:1px solid rgba(52,211,153,0.3);
+}
+.ai-badge.off{background:rgba(251,146,60,0.15);color:var(--orange);border-color:rgba(251,146,60,0.3);}
+.main{display:flex;flex-direction:column;min-width:0;}
+.topbar{
+  height:62px;background:rgba(13,10,26,0.7);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;position:sticky;top:0;z-index:50;
+}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:13px;}
+.crumbs .here{color:var(--purple2);font-weight:700;}
+.crumbs .sep{color:var(--dim);}
+.top-actions{display:flex;align-items:center;gap:10px;}
+.search{
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:8px;padding:7px 12px;color:var(--text);
+  font-size:12px;width:200px;outline:none;
+}
+.search:focus{border-color:var(--purple);background:rgba(139,92,246,0.06);}
+.btn-icon{
+  width:36px;height:36px;border-radius:8px;
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--mid);font-size:14px;
+}
+.btn-icon:hover{background:rgba(139,92,246,0.1);color:var(--purple2);}
+.content{padding:24px 28px 60px;flex:1;overflow-y:auto;}
+.page-head{margin-bottom:22px;}
+.page-head .lbl{
+  display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);
+  color:var(--purple2);margin-bottom:8px;
+}
+.page-head h1{font-size:26px;font-weight:900;letter-spacing:-0.5px;}
+.page-head p{color:var(--mid);font-size:13px;margin-top:4px;max-width:780px;line-height:1.6;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.stat{
+  background:rgba(255,255,255,0.02);border:1px solid var(--border);
+  border-radius:12px;padding:16px 18px;
+  position:relative;overflow:hidden;
+}
+.stat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent);
+}
+.stat.s1{--accent:var(--purple2);}
+.stat.s2{--accent:var(--cyan);}
+.stat.s3{--accent:var(--green);}
+.stat.s4{--accent:var(--orange);}
+.stat .label{font-size:10px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1px;}
+.stat .value{font-size:30px;font-weight:900;color:var(--text);margin-top:6px;letter-spacing:-1px;}
+.stat .delta{font-size:11px;color:var(--green);margin-top:4px;font-weight:600;}
+.stat .delta.down{color:var(--orange);}
+.stat .ico{position:absolute;top:14px;right:14px;font-size:22px;opacity:0.25;}
+.row{display:grid;gap:16px;}
+.g2{grid-template-columns:1.4fr 1fr;}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g5{grid-template-columns:repeat(5,1fr);}
+.card{
+  background:rgba(255,255,255,0.02);
+  border:1px solid var(--border);border-radius:12px;padding:18px;
+}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-hd h3{font-size:14px;font-weight:800;}
+.card-hd .sub{font-size:11px;color:var(--dim);}
+.tool-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.tool-card{
+  background:rgba(255,255,255,0.02);border:1px solid var(--border);
+  border-radius:12px;padding:18px;cursor:pointer;
+  transition:all 0.2s;position:relative;overflow:hidden;
+}
+.tool-card:hover{
+  border-color:var(--accent);transform:translateY(-3px);
+  background:linear-gradient(180deg,rgba(139,92,246,0.06),rgba(255,255,255,0.02));
+  box-shadow:0 8px 30px rgba(139,92,246,0.15);
+}
+.tool-card .t-ico{
+  width:42px;height:42px;border-radius:10px;
+  background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:12px;
+}
+.tool-card .t-title{font-size:13.5px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.tool-card .t-desc{font-size:11.5px;color:var(--mid);line-height:1.5;}
+.tool-card .t-stat{
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+  font-size:11px;color:var(--accent);font-weight:700;
+  display:flex;justify-content:space-between;
+}
+.tool-card.t1{--accent:var(--purple2);}
+.tool-card.t2{--accent:var(--purple3);}
+.tool-card.t3{--accent:var(--cyan);}
+.tool-card.t4{--accent:var(--green);}
+.tool-card.t5{--accent:var(--orange);}
+.tool-card.t6{--accent:var(--pink);}
+.tool-card.t7{--accent:var(--yellow);}
+.tool-card.t8{--accent:var(--teal);}
+.tool-card.t9{--accent:var(--cyan);}
+.tool-card.t10{--accent:var(--purple3);}
+.form-group{margin-bottom:14px;}
+.form-label{
+  display:block;font-size:11px;font-weight:700;color:var(--mid);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;
+}
+.form-hint{font-size:11px;color:var(--dim);margin-top:4px;font-style:italic;}
+.form-control{
+  width:100%;background:rgba(0,0,0,0.25);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;color:var(--text);
+  font-size:13px;font-family:inherit;outline:none;
+  transition:all 0.15s;
+}
+.form-control:focus{border-color:var(--purple);background:rgba(139,92,246,0.06);}
+textarea.form-control{min-height:90px;resize:vertical;line-height:1.55;font-family:inherit;}
+select.form-control{appearance:none;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--mid) 50%),linear-gradient(135deg,var(--mid) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:30px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:9px 16px;border-radius:8px;border:none;cursor:pointer;
+  font-family:inherit;font-size:12.5px;font-weight:700;
+  transition:all 0.15s;
+}
+.btn-primary{
+  background:linear-gradient(135deg,var(--purple),var(--purple3));
+  color:#fff;box-shadow:0 4px 16px rgba(139,92,246,0.3);
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(139,92,246,0.5);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none;}
+.btn-sec{
+  background:rgba(255,255,255,0.05);border:1px solid var(--border2);
+  color:var(--text);
+}
+.btn-sec:hover{background:rgba(139,92,246,0.1);border-color:var(--purple);}
+.btn-cyan{background:linear-gradient(135deg,#3b82f6,#06b6d4);color:#fff;}
+.btn-green{background:linear-gradient(135deg,#10b981,#34d399);color:#062a1a;}
+.btn-orange{background:linear-gradient(135deg,#f97316,#fb923c);color:#3a1a06;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--mid);}
+.btn-ghost:hover{color:var(--purple2);border-color:var(--purple);}
+.btn-sm{padding:6px 11px;font-size:11px;}
+.btn-danger{background:rgba(244,114,182,0.15);border:1px solid rgba(244,114,182,0.3);color:var(--pink);}
+.btn-danger:hover{background:rgba(244,114,182,0.25);}
+.btn-group{display:flex;gap:8px;flex-wrap:wrap;}
+.output{
+  background:#06040e;border:1px solid var(--border2);border-radius:10px;
+  padding:16px;margin-top:14px;min-height:140px;
+  font-family:'JetBrains Mono','Menlo',monospace;font-size:12px;
+  color:var(--mid);line-height:1.7;white-space:pre-wrap;
+  max-height:480px;overflow-y:auto;
+}
+.output.empty{color:var(--dim);font-style:italic;display:flex;align-items:center;justify-content:center;text-align:center;}
+.tbl{width:100%;border-collapse:collapse;font-size:12px;}
+.tbl th{
+  text-align:left;padding:9px 10px;font-size:10px;font-weight:800;
+  color:var(--purple2);text-transform:uppercase;letter-spacing:1px;
+  border-bottom:1px solid var(--border2);
+  background:rgba(139,92,246,0.05);
+}
+.tbl td{
+  padding:9px 10px;border-bottom:1px solid var(--border);
+  color:var(--mid);font-size:12px;line-height:1.4;
+}
+.tbl tr:hover td{background:rgba(139,92,246,0.04);color:var(--text);}
+.tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);}
+.score-pill{
+  display:inline-block;padding:2px 8px;border-radius:10px;
+  font-size:10px;font-weight:800;
+}
+.score-high{background:rgba(52,211,153,0.15);color:var(--green);}
+.score-mid{background:rgba(251,191,36,0.15);color:var(--yellow);}
+.score-low{background:rgba(244,114,182,0.15);color:var(--pink);}
+.leads-list{display:flex;flex-direction:column;gap:8px;margin-top:14px;max-height:400px;overflow-y:auto;}
+.lead-item{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:9px;padding:11px 14px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.lead-item:hover{border-color:var(--purple);background:rgba(139,92,246,0.06);}
+.lead-info{flex:1;min-width:0;}
+.lead-name{font-weight:800;font-size:13px;color:var(--text);}
+.lead-meta{font-size:11px;color:var(--mid);margin-top:2px;}
+.lead-actions{display:flex;gap:6px;}
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.kan-col{
+  background:rgba(255,255,255,0.02);border:1px solid var(--border);
+  border-radius:10px;padding:12px;min-height:300px;
+}
+.kan-hd{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.kan-hd h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:1px;}
+.kan-hd .count{
+  background:rgba(139,92,246,0.2);color:var(--purple2);
+  font-size:10px;font-weight:800;padding:2px 7px;border-radius:10px;
+}
+.kan-col.k1 .kan-hd h4{color:var(--cyan);}
+.kan-col.k2 .kan-hd h4{color:var(--purple2);}
+.kan-col.k3 .kan-hd h4{color:var(--yellow);}
+.kan-col.k4 .kan-hd h4{color:var(--orange);}
+.kan-col.k5 .kan-hd h4{color:var(--green);}
+.kan-cards{display:flex;flex-direction:column;gap:7px;}
+.kan-card{
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);
+  border-radius:7px;padding:9px 10px;cursor:pointer;font-size:11.5px;
+}
+.kan-card:hover{border-color:var(--purple);}
+.kan-card .kc-name{font-weight:700;color:var(--text);}
+.kan-card .kc-meta{font-size:10px;color:var(--mid);margin-top:2px;}
+.kan-empty{text-align:center;font-size:10.5px;color:var(--dim);padding:14px 4px;font-style:italic;}
+.activity{display:flex;flex-direction:column;gap:10px;max-height:380px;overflow-y:auto;}
+.act-item{
+  display:flex;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--border);
+}
+.act-item:last-child{border-bottom:none;}
+.act-dot{
+  width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0;
+  background:var(--accent);
+}
+.act-text{font-size:12px;color:var(--text);line-height:1.5;}
+.act-time{font-size:10.5px;color:var(--dim);margin-top:2px;}
+.funnel{display:flex;flex-direction:column;gap:6px;}
+.fn-step{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;border-radius:8px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  font-size:12px;
+}
+.fn-step .label{font-weight:700;}
+.fn-step .bar{
+  flex:1;margin:0 14px;height:6px;border-radius:3px;
+  background:rgba(255,255,255,0.06);overflow:hidden;
+}
+.fn-step .bar > div{height:100%;background:linear-gradient(90deg,var(--purple),var(--purple2));}
+.fn-step .num{font-weight:800;color:var(--purple2);font-family:monospace;}
+.toast{
+  position:fixed;bottom:30px;right:30px;
+  background:var(--bg3);border:1px solid var(--purple);
+  padding:12px 18px;border-radius:10px;
+  font-size:13px;font-weight:700;color:var(--purple2);
+  box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  opacity:0;transform:translateY(20px);transition:all 0.3s;z-index:9999;
+  max-width:380px;
+}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.ok{border-color:var(--green);color:var(--green);}
+.toast.err{border-color:var(--pink);color:var(--pink);}
+.toast.loading{border-color:var(--cyan);color:var(--cyan);}
+.modal-bg{
+  position:fixed;inset:0;background:rgba(5,3,12,0.8);backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;z-index:1000;
+}
+.modal-bg.show{display:flex;}
+.modal{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:14px;
+  padding:24px;max-width:620px;width:90%;max-height:85vh;overflow-y:auto;
+}
+.modal-lg{max-width:760px;}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:10px;}
+.modal p{color:var(--mid);font-size:13px;line-height:1.6;margin-bottom:14px;}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;}
+.section-divider{
+  font-size:11px;font-weight:800;color:var(--purple2);
+  text-transform:uppercase;letter-spacing:1.5px;
+  padding:14px 0 8px;margin-top:8px;
+  border-bottom:1px solid var(--border);
+}
+.section-divider:first-child{margin-top:0;padding-top:0;}
+.view{display:none;}
+.view.active{display:block;animation:fade 0.25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.loading-spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(139,92,246,0.3);
+  border-top-color:var(--purple2);
+  border-radius:50%;animation:spin 0.8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+.tag{
+  display:inline-block;padding:2px 8px;border-radius:10px;
+  font-size:10px;font-weight:800;letter-spacing:0.5px;
+}
+.tag-ai{background:rgba(52,211,153,0.15);color:var(--green);border:1px solid rgba(52,211,153,0.3);}
+.tag-tmpl{background:rgba(251,146,60,0.15);color:var(--orange);border:1px solid rgba(251,146,60,0.3);}
+.mode-toggle{
+  display:inline-flex;background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);border-radius:8px;padding:2px;
+}
+.mode-toggle button{
+  padding:6px 12px;font-size:11px;font-weight:700;
+  background:transparent;border:none;color:var(--mid);
+  cursor:pointer;border-radius:6px;
+}
+.mode-toggle button.active{
+  background:rgba(139,92,246,0.2);color:var(--purple2);
+}
+@media (max-width:1100px){
+  body{grid-template-columns:60px 1fr;}
+  .sidebar{width:60px;}
+  .brand-name,.brand-sub,.nav-section-title,.nav a span,.u-info{display:none;}
+  .nav a{justify-content:center;padding:11px 0;}
+  .stats,.tool-grid{grid-template-columns:repeat(2,1fr);}
+  .kanban{grid-template-columns:repeat(2,1fr);}
+  .form-row,.form-row-3{grid-template-columns:1fr;}
+}
+@media (max-width:680px){
+  body{grid-template-columns:1fr;}
+  .sidebar{display:none;}
+  .stats,.tool-grid,.g2,.g3,.g5,.kanban{grid-template-columns:1fr;}
+  .content{padding:16px;}
+  .topbar{padding:0 14px;}
+  .search{width:130px;}
+}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.2);border-radius:6px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(139,92,246,0.4);}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">DA</div>
+    <div>
+      <div class="brand-name">Dainik Automates</div>
+      <div class="brand-sub">AI Employee v2.0</div>
+    </div>
+  </div>
+  <nav class="nav" id="nav">
+    <div class="nav-section-title">Workspace</div>
+    <a data-view="home" class="active"><span class="ico">🏠</span><span>Home Dashboard</span></a>
+    <a data-view="crm"><span class="ico">📊</span><span>CRM Pipeline</span><span class="badge" id="badge-leads">0</span></a>
+    <div class="nav-section-title">10 AI Tools</div>
+    <a data-view="t1"><span class="ico">🔍</span><span>1. Lead Research</span></a>
+    <a data-view="t2"><span class="ico">🌐</span><span>2. Website Analyzer</span></a>
+    <a data-view="t3"><span class="ico">⚡</span><span>3. Qualification</span></a>
+    <a data-view="t4"><span class="ico">🎯</span><span>4. Opportunity Scoring</span></a>
+    <a data-view="t5"><span class="ico">📊</span><span>5. Data Enrichment</span></a>
+    <a data-view="t6"><span class="ico">✉️</span><span>6. Cold Email Writer</span></a>
+    <a data-view="t7"><span class="ico">💼</span><span>7. LinkedIn Outreach</span></a>
+    <a data-view="t8"><span class="ico">📅</span><span>8. Follow-Up Sequence</span></a>
+    <a data-view="t9"><span class="ico">🕵️</span><span>9. Competitor Research</span></a>
+    <a data-view="t10"><span class="ico">💰</span><span>10. Offer Generator</span></a>
+  </nav>
+  <div class="user-card">
+    <div class="avatar" id="user-initials">YO</div>
+    <div class="u-info">
+      <div class="u-name" id="user-name">Your Workspace</div>
+      <div class="u-role"><span class="ai-badge" id="ai-badge">⚡ Template Mode</span></div>
+    </div>
+  </div>
+</aside>
+<main class="main">
+  <div class="topbar">
+    <div class="crumbs">
+      <span>AI Employee</span><span class="sep">›</span>
+      <span class="here" id="crumb-here">Home Dashboard</span>
+    </div>
+    <div class="top-actions">
+      <input class="search" id="global-search" placeholder="Search leads, emails, offers...">
+      <button class="btn-icon" title="Settings & Profile" onclick="openSettings()">⚙️</button>
+      <button class="btn-icon" title="Export all data" onclick="exportAll()">📥</button>
+      <button class="btn-icon" title="Reset workspace" onclick="confirmReset()">🔄</button>
+    </div>
+  </div>
+  <div class="content">
 
+    <!-- ═══════ HOME ═══════ -->
+    <section class="view active" id="view-home">
+      <div class="page-head">
+        <span class="lbl">Workspace Overview</span>
+        <h1>Welcome to your AI Employee Dashboard 👋</h1>
+        <p>10 autonomous tools running on your behalf. Set your profile once in <strong>⚙️ Settings</strong> — every tool auto-fills from it. All data is saved locally.</p>
+      </div>
+      <div class="stats">
+        <div class="stat s1"><div class="ico">🔍</div><div class="label">Leads in Pipeline</div><div class="value" id="stat-leads">0</div><div class="delta">+0 this week</div></div>
+        <div class="stat s2"><div class="ico">✅</div><div class="label">Qualified Leads</div><div class="value" id="stat-qualified">0</div><div class="delta">Score ≥ 7</div></div>
+        <div class="stat s3"><div class="ico">✉️</div><div class="label">Emails Generated</div><div class="value" id="stat-emails">0</div><div class="delta">Ready to send</div></div>
+        <div class="stat s4"><div class="ico">🤝</div><div class="label">Replies / Wins</div><div class="value" id="stat-wins">0</div><div class="delta down">Track in CRM</div></div>
+      </div>
+      <div class="row g2" style="margin-bottom:18px;">
+        <div class="card">
+          <div class="card-hd">
+            <h3>📈 Sales Pipeline Funnel</h3>
+            <span class="sub">Live numbers</span>
+          </div>
+          <div class="funnel" id="funnel">
+            <div class="fn-step"><span class="label">Researched</span><div class="bar"><div style="width:100%"></div></div><span class="num" data-fn="researched">0</span></div>
+            <div class="fn-step"><span class="label">Qualified</span><div class="bar"><div style="width:75%"></div></div><span class="num" data-fn="qualified">0</span></div>
+            <div class="fn-step"><span class="label">Contacted</span><div class="bar"><div style="width:50%"></div></div><span class="num" data-fn="contacted">0</span></div>
+            <div class="fn-step"><span class="label">Replied</span><div class="bar"><div style="width:30%"></div></div><span class="num" data-fn="replied">0</span></div>
+            <div class="fn-step"><span class="label">Won</span><div class="bar"><div style="width:15%"></div></div><span class="num" data-fn="won">0</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><h3>⚡ Recent Activity</h3><span class="sub">Last 30 actions</span></div>
+          <div class="activity" id="activity-feed"></div>
+        </div>
+      </div>
+      <div class="page-head" style="margin-top:18px;">
+        <h2 style="font-size:16px;">🧰 Your 10 AI Tools</h2>
+        <p>Each tool runs independently. Click any card to open.</p>
+      </div>
+      <div class="tool-grid">
+        <div class="tool-card t1" onclick="go('t1')"><div class="t-ico">🔍</div><div class="t-title">Lead Research</div><div class="t-desc">Find qualified US businesses in your niche — output: scored lead table.</div><div class="t-stat"><span id="cnt-t1">0 leads</span><span>→</span></div></div>
+        <div class="tool-card t2" onclick="go('t2')"><div class="t-ico">🌐</div><div class="t-title">Website Analyzer</div><div class="t-desc">Analyze any company's site for tech stack, team & AI opportunities.</div><div class="t-stat"><span id="cnt-t2">0 reports</span><span>→</span></div></div>
+        <div class="tool-card t3" onclick="go('t3')"><div class="t-ico">⚡</div><div class="t-title">Qualification Engine</div><div class="t-desc">Filter leads against your ICP — keep only the highest-fit prospects.</div><div class="t-stat"><span id="cnt-t3">0 runs</span><span>→</span></div></div>
+        <div class="tool-card t4" onclick="go('t4')"><div class="t-ico">🎯</div><div class="t-title">Opportunity Scoring</div><div class="t-desc">Score every lead 1-10 with reasoning — sort by potential revenue.</div><div class="t-stat"><span id="cnt-t4">0 scored</span><span>→</span></div></div>
+        <div class="tool-card t5" onclick="go('t5')"><div class="t-ico">📊</div><div class="t-title">Data Enrichment</div><div class="t-desc">Find decision-maker names, emails, LinkedIn profiles & news.</div><div class="t-stat"><span id="cnt-t5">0 enriched</span><span>→</span></div></div>
+        <div class="tool-card t6" onclick="go('t6')"><div class="t-ico">✉️</div><div class="t-title">Cold Email Writer</div><div class="t-desc">Generate personalized first-touch emails — under 150 words.</div><div class="t-stat"><span id="cnt-t6">0 emails</span><span>→</span></div></div>
+        <div class="tool-card t7" onclick="go('t7')"><div class="t-ico">💼</div><div class="t-title">LinkedIn Outreach</div><div class="t-desc">Connection requests + InMail — short, personalized, high-reply.</div><div class="t-stat"><span id="cnt-t7">0 messages</span><span>→</span></div></div>
+        <div class="tool-card t8" onclick="go('t8')"><div class="t-ico">📅</div><div class="t-title">Follow-Up Sequence</div><div class="t-desc">3-email nurture sequence — Day 3, Day 10, breakup on Day 15.</div><div class="t-stat"><span id="cnt-t8">0 sequences</span><span>→</span></div></div>
+        <div class="tool-card t9" onclick="go('t9')"><div class="t-ico">🕵️</div><div class="t-title">Competitor Research</div><div class="t-desc">Map any company's top 5 competitors — weaknesses + AI gaps.</div><div class="t-stat"><span id="cnt-t9">0 reports</span><span>→</span></div></div>
+        <div class="tool-card t10" onclick="go('t10')"><div class="t-ico">💰</div><div class="t-title">Offer Generator</div><div class="t-desc">Create 3-tier AI service offers — $1K / $5K / $15K monthly.</div><div class="t-stat"><span id="cnt-t10">0 offers</span><span>→</span></div></div>
+      </div>
+    </section>
+
+    <!-- ═══════ CRM ═══════ -->
+    <section class="view" id="view-crm">
+      <div class="page-head">
+        <span class="lbl">CRM</span>
+        <h1>Lead Pipeline</h1>
+        <p>Track every lead from research to close. Click any card to change its stage — saved automatically.</p>
+      </div>
+      <div class="kanban">
+        <div class="kan-col k1"><div class="kan-hd"><h4>New / Researched</h4><span class="count" id="c-k1">0</span></div><div class="kan-cards" data-stage="researched" id="kan-researched"></div></div>
+        <div class="kan-col k2"><div class="kan-hd"><h4>Qualified</h4><span class="count" id="c-k2">0</span></div><div class="kan-cards" data-stage="qualified" id="kan-qualified"></div></div>
+        <div class="kan-col k3"><div class="kan-hd"><h4>Contacted</h4><span class="count" id="c-k3">0</span></div><div class="kan-cards" data-stage="contacted" id="kan-contacted"></div></div>
+        <div class="kan-col k4"><div class="kan-hd"><h4>Replied</h4><span class="count" id="c-k4">0</span></div><div class="kan-cards" data-stage="replied" id="kan-replied"></div></div>
+        <div class="kan-col k5"><div class="kan-hd"><h4>Won</h4><span class="count" id="c-k5">0</span></div><div class="kan-cards" data-stage="won" id="kan-won"></div></div>
+      </div>
+      <div style="margin-top:18px;">
+        <button class="btn btn-primary" onclick="go('t1')">+ Add Lead from Research</button>
+        <button class="btn btn-sec" onclick="exportLeadsCSV()">📥 Export Pipeline (CSV)</button>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 1 — LEAD RESEARCH ═══════ -->
+    <section class="view" id="view-t1">
+      <div class="page-head">
+        <span class="lbl">Tool 01 · Lead Research</span>
+        <h1>🔍 Find Your Leads</h1>
+        <p>Auto-filled from your profile. Click <strong>Generate Leads</strong> to start.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Input</h3><span class="sub"><span class="tag" id="mode-tag-t1">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Niche / Industry</label><input class="form-control" id="t1-niche" placeholder="e.g. marketing agencies"></div>
+              <div class="form-group"><label class="form-label">US State / Region</label><input class="form-control" id="t1-region" placeholder="e.g. Texas, California, all US"></div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group"><label class="form-label">Min Employees</label><input class="form-control" type="number" id="t1-min"></div>
+              <div class="form-group"><label class="form-label">Max Employees</label><input class="form-control" type="number" id="t1-max"></div>
+              <div class="form-group"><label class="form-label"># of Leads</label><input class="form-control" type="number" id="t1-count"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Specific Pain Filter</label><input class="form-control" id="t1-pain" placeholder="e.g. manual reporting, no AI services"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t1" onclick="runT1()">✨ Generate Leads</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t1')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-sec" onclick="pasteT1()">📥 Paste Output</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📊 Generated Leads</h3><span class="sub" id="t1-info">—</span></div>
+            <div class="tbl-wrap">
+              <table class="tbl" id="t1-table">
+                <thead><tr><th>#</th><th>Company</th><th>Website</th><th>Location</th><th>Size</th><th>AI Opportunity</th><th>Score</th><th></th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>🎯 Output</h3><span class="sub" id="t1-output-mode">—</span></div>
+            <div class="output empty" id="t1-output">Click <strong>Generate Leads</strong>...</div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>💡 Pro Tips</h3></div>
+            <ul style="list-style:none;font-size:12px;color:var(--mid);line-height:1.8;">
+              <li>• <strong>Profile saves you time</strong> — niche & region pre-filled</li>
+              <li>• <strong>AI mode</strong> = real researched leads (needs API key)</li>
+              <li>• <strong>Template mode</strong> = instant fake data (no key needed)</li>
+              <li>• Top 5 (score ≥ 8) → CRM with one click</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 2 ═══════ -->
+    <section class="view" id="view-t2">
+      <div class="page-head">
+        <span class="lbl">Tool 02 · Website Analyzer</span>
+        <h1>🌐 Analyze Any Company</h1>
+        <p>Get tech stack, team signals, processes and AI opportunities for one company.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Company to Analyze</h3><span class="sub"><span class="tag" id="mode-tag-t2">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" id="t2-name" placeholder="e.g. BrightSpark Marketing"></div>
+              <div class="form-group"><label class="form-label">Website URL</label><input class="form-control" id="t2-url" placeholder="https://"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Focus Areas (comma separated)</label><input class="form-control" id="t2-focus"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t2" onclick="runT2()">🔬 Analyze</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t2')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-sec" onclick="pasteT2()">📥 Paste Output</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Analysis Library</h3><span class="sub" id="t2-info">—</span></div>
+            <div class="leads-list" id="t2-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>🔍 Analysis Report</h3></div>
+            <div class="output empty" id="t2-output">Enter company details & click Analyze...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 3 ═══════ -->
+    <section class="view" id="view-t3">
+      <div class="page-head">
+        <span class="lbl">Tool 03 · Qualification Engine</span>
+        <h1>⚡ Filter Leads Against Your ICP</h1>
+        <p>Set your ideal customer profile — we'll filter your saved leads. ICP is pre-filled from your profile.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>🎯 Your ICP (Ideal Customer Profile)</h3></div>
+            <div class="form-group"><label class="form-label">Min Score to Qualify</label><input class="form-control" type="number" id="t3-minscore" min="1" max="10"></div>
+            <div class="form-group"><label class="form-label">Required Industries (comma separated)</label><input class="form-control" id="t3-industries"></div>
+            <div class="form-group"><label class="form-label">Required Min Team Size</label><input class="form-control" type="number" id="t3-minsize"></div>
+            <div class="form-group"><label class="form-label">Excluded Keywords</label><input class="form-control" id="t3-exclude"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" onclick="runT3()">⚡ Run Filter</button>
+              <button class="btn btn-green" onclick="saveQualified()">💾 Save Qualified to CRM</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>✅ Filtered Results</h3><span class="sub" id="t3-info">—</span></div>
+            <div class="tbl-wrap">
+              <table class="tbl" id="t3-table"><thead><tr><th>#</th><th>Company</th><th>Industry</th><th>Size</th><th>Score</th><th>Status</th></tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 4 ═══════ -->
+    <section class="view" id="view-t4">
+      <div class="page-head">
+        <span class="lbl">Tool 04 · Opportunity Scoring</span>
+        <h1>🎯 Score 1–10 with Reasoning</h1>
+        <p>Auto-score all your saved leads. Criteria is pre-filled from your profile.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📊 Scoring Criteria</h3><span class="sub"><span class="tag" id="mode-tag-t4">Loading...</span></span></div>
+            <div class="form-group"><label class="form-label">Scoring Weights</label>
+              <textarea class="form-control" id="t4-criteria"></textarea>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t4" onclick="runT4()">🎯 Score All Leads</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t4')">📋 Copy Claude Prompt</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>🏆 Ranked Leads</h3><span class="sub" id="t4-info">—</span></div>
+            <div class="tbl-wrap">
+              <table class="tbl" id="t4-table"><thead><tr><th>Rank</th><th>Company</th><th>Score</th><th>Reasoning</th></tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 5 ═══════ -->
+    <section class="view" id="view-t5">
+      <div class="page-head">
+        <span class="lbl">Tool 05 · Data Enrichment</span>
+        <h1>📊 Find Decision-Makers & Contacts</h1>
+        <p>Pull names, emails, LinkedIn URLs, and recent company news for any lead.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Company to Enrich</h3><span class="sub"><span class="tag" id="mode-tag-t5">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Company</label><input class="form-control" id="t5-company" placeholder="Company name"></div>
+              <div class="form-group"><label class="form-label">Website</label><input class="form-control" id="t5-website" placeholder="https://"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Target Roles (comma separated)</label><input class="form-control" id="t5-roles"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t5" onclick="runT5()">📊 Enrich</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t5')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-sec" onclick="pasteT5()">📥 Paste Output</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Enrichment Library</h3><span class="sub" id="t5-info">—</span></div>
+            <div class="leads-list" id="t5-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>👤 Enriched Contacts</h3></div>
+            <div class="output empty" id="t5-output">Enter company & click Enrich...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 6 — COLD EMAIL ═══════ -->
+    <section class="view" id="view-t6">
+      <div class="page-head">
+        <span class="lbl">Tool 06 · Cold Email Writer</span>
+        <h1>✉️ Personalized Cold Emails</h1>
+        <p>Your info is auto-filled from profile. Just enter recipient details.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Email Inputs</h3><span class="sub"><span class="tag" id="mode-tag-t6">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Recipient Company</label><input class="form-control" id="t6-company" placeholder="e.g. BrightSpark"></div>
+              <div class="form-group"><label class="form-label">Recipient First Name</label><input class="form-control" id="t6-name" placeholder="e.g. Sarah"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Their Likely Pain Point</label><input class="form-control" id="t6-pain"></div>
+            <div class="form-group"><label class="form-label">Your AI Solution</label><input class="form-control" id="t6-solution"></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Your Name</label><input class="form-control" id="t6-myname"></div>
+              <div class="form-group"><label class="form-label">Your Company</label><input class="form-control" id="t6-mycompany"></div>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t6" onclick="runT6()">✉️ Generate Email</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t6')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-green" onclick="copyT6()">📋 Copy Email</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Email Library</h3><span class="sub" id="t6-info">—</span></div>
+            <div class="leads-list" id="t6-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📧 Your Email</h3></div>
+            <div class="output empty" id="t6-output">Fill the form & click Generate...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 7 — LINKEDIN ═══════ -->
+    <section class="view" id="view-t7">
+      <div class="page-head">
+        <span class="lbl">Tool 07 · LinkedIn Outreach</span>
+        <h1>💼 Connection + InMail</h1>
+        <p>Short connection request (≤300 chars) + longer InMail (≤100 words).</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 LinkedIn Inputs</h3><span class="sub"><span class="tag" id="mode-tag-t7">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Recipient Name</label><input class="form-control" id="t7-name" placeholder="Sarah"></div>
+              <div class="form-group"><label class="form-label">Company</label><input class="form-control" id="t7-company" placeholder="BrightSpark"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Their Work / Context</label><input class="form-control" id="t7-context"></div>
+            <div class="form-group"><label class="form-label">Your Value Prop</label><input class="form-control" id="t7-value"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t7" onclick="runT7()">💼 Generate</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t7')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-green" onclick="copyT7()">📋 Copy</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 LinkedIn Library</h3><span class="sub" id="t7-info">—</span></div>
+            <div class="leads-list" id="t7-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>💼 Connection & InMail</h3></div>
+            <div class="output empty" id="t7-output">Fill form & click Generate...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 8 — FOLLOW-UP ═══════ -->
+    <section class="view" id="view-t8">
+      <div class="page-head">
+        <span class="lbl">Tool 08 · Follow-Up Sequence</span>
+        <h1>📅 3-Email Nurture</h1>
+        <p>Day 3 → Day 10 → Breakup Day 15.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Sequence Inputs</h3><span class="sub"><span class="tag" id="mode-tag-t8">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Recipient Name</label><input class="form-control" id="t8-name" placeholder="Sarah"></div>
+              <div class="form-group"><label class="form-label">Company</label><input class="form-control" id="t8-company" placeholder="BrightSpark"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Original Pain / Topic</label><input class="form-control" id="t8-topic"></div>
+            <div class="form-group"><label class="form-label">Common Objection</label><input class="form-control" id="t8-objection"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t8" onclick="runT8()">📅 Generate Sequence</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t8')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-green" onclick="copyT8()">📋 Copy All</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Sequence Library</h3><span class="sub" id="t8-info">—</span></div>
+            <div class="leads-list" id="t8-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📅 3-Email Sequence</h3></div>
+            <div class="output empty" id="t8-output">Fill form & click Generate...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 9 — COMPETITOR ═══════ -->
+    <section class="view" id="view-t9">
+      <div class="page-head">
+        <span class="lbl">Tool 09 · Competitor Research</span>
+        <h1>🕵️ Map Top 5 Competitors</h1>
+        <p>Find competitors, their weaknesses, and AI opportunities you'd offer them.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Target Company</h3><span class="sub"><span class="tag" id="mode-tag-t9">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" id="t9-name" placeholder="BrightSpark"></div>
+              <div class="form-group"><label class="form-label">Their Industry</label><input class="form-control" id="t9-industry"></div>
+            </div>
+            <div class="form-group"><label class="form-label"># of Competitors</label><input class="form-control" type="number" id="t9-count"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t9" onclick="runT9()">🕵️ Research</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t9')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-sec" onclick="pasteT9()">📥 Paste Output</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Research Library</h3><span class="sub" id="t9-info">—</span></div>
+            <div class="leads-list" id="t9-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>🏆 Competitors Report</h3></div>
+            <div class="output empty" id="t9-output">Enter target company & click Research...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ TOOL 10 — OFFERS ═══════ -->
+    <section class="view" id="view-t10">
+      <div class="page-head">
+        <span class="lbl">Tool 10 · Offer Generator</span>
+        <h1>💰 3-Tier AI Service Offers</h1>
+        <p>Generate $1K / $5K / $15K monthly offers tailored to a specific prospect.</p>
+      </div>
+      <div class="row g2">
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>📥 Offer Inputs</h3><span class="sub"><span class="tag" id="mode-tag-t10">Loading...</span></span></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Client Company</label><input class="form-control" id="t10-company" placeholder="BrightSpark"></div>
+              <div class="form-group"><label class="form-label">Industry</label><input class="form-control" id="t10-industry"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Their Main Pain Point</label><input class="form-control" id="t10-pain"></div>
+            <div class="form-group"><label class="form-label">Your Specialty</label><input class="form-control" id="t10-specialty"></div>
+            <div class="form-group"><label class="form-label">Pricing (comma separated)</label><input class="form-control" id="t10-pricing"></div>
+            <div class="btn-group">
+              <button class="btn btn-primary" id="btn-t10" onclick="runT10()">💰 Generate Offers</button>
+              <button class="btn btn-cyan" onclick="copyPrompt('t10')">📋 Copy Claude Prompt</button>
+              <button class="btn btn-green" onclick="copyT10()">📋 Copy</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top:14px;">
+            <div class="card-hd"><h3>📚 Offers Library</h3><span class="sub" id="t10-info">—</span></div>
+            <div class="leads-list" id="t10-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-hd"><h3>💰 Your Offers</h3></div>
+            <div class="output empty" id="t10-output">Fill form & click Generate...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- ═══════ SETTINGS MODAL ═══════ -->
+<div class="modal-bg" id="modal-settings">
+  <div class="modal modal-lg">
+    <h3>⚙️ Settings & Profile</h3>
+    <p>Set your business profile ONCE. All tools will auto-fill from this. Optional: add an AI API key to enable real AI generation.</p>
+
+    <div class="section-divider">👤 Your Business Info</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Your Name</label><input class="form-control" id="s-myname" placeholder="e.g. Rahul Patel"></div>
+      <div class="form-group"><label class="form-label">Your Company</label><input class="form-control" id="s-mycompany" placeholder="e.g. AI Automators"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Your Specialty / Value Prop</label><input class="form-control" id="s-specialty" placeholder="e.g. AI workflow automation for marketing agencies"></div>
+
+    <div class="section-divider">🎯 Default Lead Targeting</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Default Niche</label><input class="form-control" id="s-niche" placeholder="e.g. marketing agencies"></div>
+      <div class="form-group"><label class="form-label">Default Region</label><input class="form-control" id="s-region" placeholder="e.g. all US, Texas, California"></div>
+    </div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Min Team Size</label><input class="form-control" type="number" id="s-minsize" value="5"></div>
+      <div class="form-group"><label class="form-label">Max Team Size</label><input class="form-control" type="number" id="s-maxsize" value="200"></div>
+      <div class="form-group"><label class="form-label">Default Lead Count</label><input class="form-control" type="number" id="s-leadcount" value="20"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Default Pain Points (comma separated)</label><input class="form-control" id="s-pain" placeholder="manual reporting, no AI services, lead follow-up"></div>
+
+    <div class="section-divider">🧲 ICP & Scoring</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Min Score to Qualify</label><input class="form-control" type="number" id="s-minscore" value="7" min="1" max="10"></div>
+      <div class="form-group"><label class="form-label">Required Industries (blank = any)</label><input class="form-control" id="s-industries" placeholder="marketing, real estate, saas"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Scoring Criteria (multi-line)</label><textarea class="form-control" id="s-criteria">Budget signals: 25%
+Decision maker accessibility: 25%
+AI investment likelihood: 25%
+Team size & fit: 15%
+Manual process indicators: 10%</textarea></div>
+    <div class="form-group"><label class="form-label">Excluded Keywords</label><input class="form-control" id="s-exclude" placeholder="enterprise, fortune 500"></div>
+
+    <div class="section-divider">💰 Default Pricing</div>
+    <div class="form-row-3">
+      <div class="form-group"><label class="form-label">Tier 1</label><input class="form-control" id="s-p1" value="$1,500/mo"></div>
+      <div class="form-group"><label class="form-label">Tier 2</label><input class="form-control" id="s-p2" value="$5,000/mo"></div>
+      <div class="form-group"><label class="form-label">Tier 3</label><input class="form-control" id="s-p3" value="$15,000/mo"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Target Decision-Maker Roles</label><input class="form-control" id="s-roles" value="CEO, Founder, Marketing Director, COO"></div>
+
+    <div class="section-divider">🤖 AI Backend (Optional)</div>
+    <p style="font-size:12px;color:var(--mid);margin-bottom:10px;">Add your own API key to enable real AI generation. <strong>Your key stays in your browser</strong> — never sent anywhere except the AI provider.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">AI Provider</label>
+        <select class="form-control" id="s-provider">
+          <option value="gemini">🆓 Google Gemini (free via aistudio.google.com)</option>
+          <option value="openai">OpenAI (gpt-4o-mini)</option>
+          <option value="openrouter">OpenRouter (any model)</option>
+          <option value="custom">Custom OpenAI-compatible</option>
+          <option value="none">— None (Template mode only) —</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Model Name</label><input class="form-control" id="s-model" value="gemini-2.0-flash"><div class="form-hint">💡 Get free Gemini key at <strong>aistudio.google.com</strong> → Get API Key (free tier: 1500 req/day)</div></div>
+    </div>
+    <div class="form-group"><label class="form-label">API Key</label><input class="form-control" id="s-apikey" type="password" placeholder="AIza... (Gemini) or sk-... (OpenAI)"><div class="form-hint">🔒 Stored only in your browser's localStorage. Used directly to call the AI provider. Never sent to any server.<br>🆓 <strong>Free?</strong> Get Gemini key at <a href="https://aistudio.google.com" target="_blank" style="color:var(--cyan)">aistudio.google.com</a> — 1500 free requests/day!</div></div>
+    <div class="form-group"><label class="form-label">Custom API URL (only if "Custom" provider)</label><input class="form-control" id="s-apiurl" placeholder="https://api.example.com/v1/chat/completions"></div>
+    <div class="btn-group">
+      <button class="btn btn-sec" onclick="testAI()">🧪 Test Connection</button>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-settings')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modal-reset">
+  <div class="modal">
+    <h3>⚠️ Reset Workspace?</h3>
+    <p>This will delete all leads, emails, sequences, and saved data. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reset')">Cancel</button>
+      <button class="btn btn-danger" onclick="doReset()">Yes, Reset Everything</button>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-paste">
+  <div class="modal">
+    <h3>📥 Paste Claude's Output</h3>
+    <p>Paste the response you got from your Claude project below.</p>
+    <textarea class="form-control" id="paste-text" style="min-height:200px;" placeholder="Paste Claude's response here..."></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-paste')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmPaste()">💾 Save to Dashboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY='ai_employee_v2';
+let state={
+  leads:[],analyses:[],enrichments:[],emails:[],linkedins:[],sequences:[],competitors:[],offers:[],activity:[],
+  lastInputs:{}  // remember last values per field
+};
+let profile={
+  myname:'',mycompany:'',specialty:'',
+  niche:'',region:'',minsize:5,maxsize:200,leadcount:20,pain:'',
+  minscore:7,industries:'',criteria:'',exclude:'',
+  p1:'$1,500/mo',p2:'$5,000/mo',p3:'$15,000/mo',roles:'CEO, Founder, Marketing Director, COO',
+  provider:'none',model:'gpt-4o-mini',apikey:'',apiurl:''
+};
+
+function loadState(){try{const s=localStorage.getItem(STORAGE_KEY);if(s){const o=JSON.parse(s);state={...state,...o.state};profile={...profile,...o.profile};}}catch(e){console.warn(e);}}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({state,profile}));}catch(e){toast('Storage error','err');}}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+
+const VIEW_TITLES={home:'Home Dashboard',crm:'CRM Pipeline',t1:'Lead Research',t2:'Website Analyzer',t3:'Qualification Engine',t4:'Opportunity Scoring',t5:'Data Enrichment',t6:'Cold Email Writer',t7:'LinkedIn Outreach',t8:'Follow-Up Sequence',t9:'Competitor Research',t10:'Offer Generator'};
+
+function go(v){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('active'));
+  const el=document.getElementById('view-'+v);if(el)el.classList.add('active');
+  const nav=document.querySelector('.nav a[data-view="'+v+'"]');if(nav)nav.classList.add('active');
+  document.getElementById('crumb-here').textContent=VIEW_TITLES[v]||'';
+  window.scrollTo({top:0,behavior:'smooth'});
+  autoFillTool(v);
+}
+document.querySelectorAll('.nav a').forEach(a=>{a.addEventListener('click',()=>go(a.dataset.view));});
+document.getElementById('global-search').addEventListener('input',e=>{
+  const q=e.target.value.toLowerCase().trim();if(!q)return;
+  const m=state.leads.filter(l=>l.company.toLowerCase().includes(q)||(l.industry||'').toLowerCase().includes(q));
+  if(m.length)toast(`Found ${m.length} lead(s) — open CRM to view`,'ok');
+});
+
+function log(text){state.activity.unshift({id:uid(),text,time:new Date().toLocaleString()});state.activity=state.activity.slice(0,30);renderActivity();saveState();}
+function renderActivity(){
+  const el=document.getElementById('activity-feed');
+  if(!state.activity.length){el.innerHTML='<div class="act-item"><div class="act-dot" style="background:var(--purple2)"></div><div><div class="act-text">Workspace ready. Open <strong>⚙️ Settings</strong> to set your profile & (optional) AI key.</div></div></div>';return;}
+  el.innerHTML=state.activity.map(a=>{const c=a.text.includes('Won')?'green':a.text.includes('Reply')?'orange':a.text.includes('Email')?'cyan':'purple2';return `<div class="act-item"><div class="act-dot" style="background:var(--${c})"></div><div><div class="act-text">${esc(a.text)}</div><div class="act-time">${esc(a.time)}</div></div></div>`;}).join('');
+}
+
+function renderStats(){
+  const leads=state.leads.length;
+  const qual=state.leads.filter(l=>(l.score||0)>=7).length;
+  const emails=state.emails.length+state.linkedins.length+state.sequences.length;
+  const wins=state.leads.filter(l=>l.status==='won').length;
+  document.getElementById('stat-leads').textContent=leads;
+  document.getElementById('stat-qualified').textContent=qual;
+  document.getElementById('stat-emails').textContent=emails;
+  document.getElementById('stat-wins').textContent=wins;
+  document.getElementById('badge-leads').textContent=leads;
+  ['researched','qualified','contacted','replied','won'].forEach(st=>{
+    const c=state.leads.filter(l=>l.status===st).length;
+    const el=document.querySelector('[data-fn="'+st+'"]');if(el)el.textContent=c;
+  });
+  ['researched','qualified','contacted','replied','won'].forEach((st,i)=>{
+    const c=state.leads.filter(l=>l.status===st).length;
+    document.getElementById('c-k'+(i+1)).textContent=c;
+  });
+  renderKanban();
+  ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'].forEach(t=>{
+    const map={t1:'leads',t2:'analyses',t3:'leads',t4:'leads',t5:'enrichments',t6:'emails',t7:'linkedins',t8:'sequences',t9:'competitors',t10:'offers'};
+    const arr=state[map[t]];
+    const lbl={t1:'leads',t2:'reports',t3:'runs',t4:'scored',t5:'enriched',t6:'emails',t7:'messages',t8:'sequences',t9:'reports',t10:'offers'}[t];
+    const el=document.getElementById('cnt-'+t);if(el)el.textContent=`${arr.length} ${lbl}`;
+  });
+}
+
+function renderKanban(){
+  const stages=['researched','qualified','contacted','replied','won'];
+  stages.forEach(st=>{
+    const el=document.getElementById('kan-'+st);
+    const items=state.leads.filter(l=>l.status===st);
+    if(!items.length){el.innerHTML='<div class="kan-empty">No leads here</div>';return;}
+    el.innerHTML=items.map(l=>{
+      const sc=l.score||0;
+      const scCl=sc>=8?'score-high':sc>=5?'score-mid':'score-low';
+      return `<div class="kan-card" onclick="viewLead('${l.id}')"><div class="kc-name">${esc(l.company)}</div><div class="kc-meta">${esc(l.industry||'—')} · ${esc(l.location||'')} · <span class="score-pill ${scCl}">${sc}/10</span></div></div>`;
+    }).join('');
+  });
+}
+function setLeadStage(id,stage){
+  const l=state.leads.find(x=>x.id===id);if(!l)return;
+  l.status=stage;saveState();renderStats();
+  log(`Moved "${l.company}" → ${stage}`);
+  toast(`✅ ${l.company} → ${stage}`,'ok');
+}
+function viewLead(id){
+  const l=state.leads.find(x=>x.id===id);if(!l)return;
+  const newSt=prompt(`Move "${l.company}" to stage:\nresearched | qualified | contacted | replied | won`,'qualified');
+  if(newSt&&['researched','qualified','contacted','replied','won'].includes(newSt))setLeadStage(id,newSt);
+}
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function toast(msg,type='ok',duration=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast show '+(type==='err'?'err':type==='loading'?'loading':'ok');
+  setTimeout(()=>t.className='toast',duration);
+}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function openModal(id){document.getElementById(id).classList.add('show');}
+function confirmReset(){openModal('modal-reset');}
+function doReset(){
+  state.leads=[];state.analyses=[];state.enrichments=[];state.emails=[];state.linkedins=[];state.sequences=[];state.competitors=[];state.offers=[];state.activity=[];
+  saveState();renderAll();closeModal('modal-reset');toast('Workspace reset','ok');
+}
+function copyText(text){
+  if(navigator.clipboard)navigator.clipboard.writeText(text).then(()=>toast('Copied ✓','ok'));
+  else{const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Copied ✓','ok');}
+}
+
+/* ════════════════════════════════════════
+   SETTINGS / PROFILE
+════════════════════════════════════════ */
+function openSettings(){
+  // pre-fill from profile
+  const map={myname:'s-myname',mycompany:'s-mycompany',specialty:'s-specialty',niche:'s-niche',region:'s-region',minsize:'s-minsize',maxsize:'s-maxsize',leadcount:'s-leadcount',pain:'s-pain',minscore:'s-minscore',industries:'s-industries',criteria:'s-criteria',exclude:'s-exclude',p1:'s-p1',p2:'s-p2',p3:'s-p3',roles:'s-roles',provider:'s-provider',model:'s-model',apikey:'s-apikey',apiurl:'s-apiurl'};
+  Object.entries(map).forEach(([k,id])=>{const el=document.getElementById(id);if(el)el.value=profile[k]||'';});
+  openModal('modal-settings');
+}
+function saveSettings(){
+  const map={myname:'s-myname',mycompany:'s-mycompany',specialty:'s-specialty',niche:'s-niche',region:'s-region',minsize:'s-minsize',maxsize:'s-maxsize',leadcount:'s-leadcount',pain:'s-pain',minscore:'s-minscore',industries:'s-industries',criteria:'s-criteria',exclude:'s-exclude',p1:'s-p1',p2:'s-p2',p3:'s-p3',roles:'s-roles',provider:'s-provider',model:'s-model',apikey:'s-apikey',apiurl:'s-apiurl'};
+  Object.entries(map).forEach(([k,id])=>{const el=document.getElementById(id);if(el)profile[k]=el.value;});
+  saveState();closeModal('modal-settings');
+  updateUIBadges();toast('✅ Profile saved — all tools auto-filled','ok');
+  log('Saved profile & settings');
+  // Re-fill current view
+  const active=document.querySelector('.view.active');if(active)autoFillTool(active.id.replace('view-',''));
+}
+function updateUIBadges(){
+  // User name in sidebar
+  const nm=profile.myname||'Your Workspace';
+  document.getElementById('user-name').textContent=nm;
+  document.getElementById('user-initials').textContent=nm.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase()||'YO';
+  // AI badge
+  const ai=profile.provider!=='none'&&profile.apikey;
+  const badge=document.getElementById('ai-badge');
+  badge.textContent=ai?'🤖 AI Mode':'⚡ Template Mode';
+  badge.className='ai-badge'+(ai?'':' off');
+  // Per-tool mode tags
+  ['t1','t2','t4','t5','t6','t7','t8','t9','t10'].forEach(t=>{
+    const tag=document.getElementById('mode-tag-'+t);
+    if(!tag)return;
+    tag.textContent=ai?'🤖 AI':'⚡ Tmpl';
+    tag.className='tag '+(ai?'tag-ai':'tag-tmpl');
+  });
+}
+
+/* ════════════════════════════════════════
+   AUTO-FILL TOOLS FROM PROFILE + LAST INPUTS
+════════════════════════════════════════ */
+function autoFillTool(v){
+  if(!v||v==='home'||v==='crm')return;
+  // Map of tool -> field ids with defaults from profile
+  const fills={
+    t1:{'t1-niche':profile.niche,'t1-region':profile.region,'t1-min':profile.minsize,'t1-max':profile.maxsize,'t1-count':profile.leadcount,'t1-pain':profile.pain},
+    t2:{'t2-focus':profile.specialty},
+    t3:{'t3-minscore':profile.minscore,'t3-industries':profile.industries,'t3-minsize':profile.minsize,'t3-exclude':profile.exclude},
+    t4:{'t4-criteria':profile.criteria},
+    t5:{'t5-roles':profile.roles},
+    t6:{'t6-myname':profile.myname,'t6-mycompany':profile.mycompany,'t6-solution':profile.specialty,'t6-pain':profile.pain},
+    t7:{'t7-value':profile.specialty,'t7-context':profile.specialty},
+    t8:{'t8-topic':profile.pain,'t8-objection':'we don\'t have time to set this up'},
+    t9:{'t9-industry':profile.niche},
+    t10:{'t10-industry':profile.niche,'t10-specialty':profile.specialty,'t10-pain':profile.pain,'t10-pricing':[profile.p1,profile.p2,profile.p3].join(',')}
+  };
+  const map=fills[v];if(!map)return;
+  // Priority: last input > profile > current value (only fill if empty)
+  Object.entries(map).forEach(([id,val])=>{
+    const el=document.getElementById(id);if(!el)return;
+    const lastKey=v+'.'+id;
+    if(state.lastInputs[lastKey]){el.value=state.lastInputs[lastKey];}
+    else if(!el.value&&val!=null&&val!==''){el.value=val;}
+  });
+  updateUIBadges();
+}
+function rememberInput(tool,id){
+  state.lastInputs[tool+'.'+id]=document.getElementById(id)?.value||'';
+  saveState();
+}
+// Auto-remember on input change
+['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'].forEach(t=>{
+  ['t1-niche','t1-region','t1-min','t1-max','t1-count','t1-pain','t2-name','t2-url','t2-focus','t3-minscore','t3-industries','t3-minsize','t3-exclude','t4-criteria','t5-company','t5-website','t5-roles','t6-company','t6-name','t6-pain','t6-solution','t6-myname','t6-mycompany','t7-name','t7-company','t7-context','t7-value','t8-name','t8-company','t8-topic','t8-objection','t9-name','t9-industry','t9-count','t10-company','t10-industry','t10-pain','t10-specialty','t10-pricing'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.addEventListener('input',()=>rememberInput(t,id));
+  });
+});
+
+/* ════════════════════════════════════════
+   AI BACKEND (OpenAI-compatible)
+════════════════════════════════════════ */
+async function callAI(prompt,systemMsg=''){
+  const ai=profile.provider!=='none'&&profile.apikey;
+  if(!ai) throw new Error('No AI configured');
+  let url,headers,body;
+  if(profile.provider==='gemini'){
+    // Google AI Studio / Gemini API format
+    const model=profile.model||'gemini-2.0-flash';
+    url=`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${profile.apikey}`;
+    headers={'Content-Type':'application/json'};
+    body={
+      contents:[{role:'user',parts:[{text:prompt}]}],
+      systemInstruction:systemMsg?{parts:[{text:systemMsg}]}:undefined,
+      generationConfig:{temperature:0.7,maxOutputTokens:4000}
+    };
+    if(!body.systemInstruction)delete body.systemInstruction;
+    const r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.text();throw new Error('Gemini API '+r.status+': '+e.slice(0,300));}
+    const data=await r.json();
+    const txt=data.candidates?.[0]?.content?.parts?.[0]?.text||'(empty response)';
+    return txt;
+  } else if(profile.provider==='openai'){
+    url='https://api.openai.com/v1/chat/completions';
+    headers={'Content-Type':'application/json','Authorization':'Bearer '+profile.apikey};
+    body={model:profile.model||'gpt-4o-mini',messages:[{role:'system',content:systemMsg},{role:'user',content:prompt}],temperature:0.7};
+    const r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.text();throw new Error('API '+r.status+': '+e.slice(0,200));}
+    const data=await r.json();
+    return data.choices?.[0]?.message?.content||data.message?.content||'(empty response)';
+  } else if(profile.provider==='openrouter'){
+    url='https://openrouter.ai/api/v1/chat/completions';
+    headers={'Content-Type':'application/json','Authorization':'Bearer '+profile.apikey,'HTTP-Referer':window.location.origin,'X-Title':'AI Employee Dashboard'};
+    body={model:profile.model||'openai/gpt-4o-mini',messages:[{role:'system',content:systemMsg},{role:'user',content:prompt}]};
+    const r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.text();throw new Error('API '+r.status+': '+e.slice(0,200));}
+    const data=await r.json();
+    return data.choices?.[0]?.message?.content||data.message?.content||'(empty response)';
+  } else if(profile.provider==='custom'){
+    url=profile.apiurl;
+    headers={'Content-Type':'application/json','Authorization':'Bearer '+profile.apikey};
+    body={model:profile.model,messages:[{role:'system',content:systemMsg},{role:'user',content:prompt}]};
+    const r=await fetch(url,{method:'POST',headers,body:JSON.stringify(body)});
+    if(!r.ok){const e=await r.text();throw new Error('API '+r.status+': '+e.slice(0,200));}
+    const data=await r.json();
+    return data.choices?.[0]?.message?.content||data.message?.content||'(empty response)';
+  } else throw new Error('Unknown provider');
+}
+async function testAI(){
+  if(profile.provider==='none'||!profile.apikey){toast('Add API key first','err');return;}
+  toast('Testing AI connection...','loading',8000);
+  try{
+    const r=await callAI('Reply with just the word: OK');
+    toast('✅ AI connected! Response: '+r.slice(0,50),'ok',4000);
+  }catch(e){
+    toast('❌ '+e.message,'err',5000);
+  }
+}
+
+/* ════════════════════════════════════════
+   PROMPT BUILDERS (for AI + Claude copy)
+════════════════════════════════════════ */
+const SYSTEM_PROMPT='You are an expert B2B sales researcher and copywriter specializing in AI automation services. You produce precise, structured, high-converting outputs. Always return data in clean tables or well-formatted text.';
+function buildPrompt(tool){
+  const map={
+    t1:`Find ${document.getElementById('t1-count').value||20} REAL, currently operating ${document.getElementById('t1-niche').value||'marketing agencies'} in ${document.getElementById('t1-region').value||'the United States'} that are likely NOT using AI automation services.
+
+For each company return a TABLE row with EXACTLY these columns:
+| # | Company Name | Website | Location | Est. Team Size | Industry | AI Pain/Opp | Score (1-10) |
+
+Focus on companies with ${document.getElementById('t1-min').value||5}-${document.getElementById('t1-max').value||200} employees. Pain focus: ${document.getElementById('t1-pain').value||'manual processes that could be automated'}.
+
+Rules:
+- Use REAL company names (not placeholder/example names)
+- Use REAL or realistic-looking websites (.com domains)
+- Score 8-10 = strong fit, 5-7 = medium, 1-4 = poor fit
+- Provide ${document.getElementById('t1-count').value||20} rows total
+- Include "Why they fit" reasoning in the AI Pain/Opp column`,
+
+    t2:`Research this company in depth for AI automation opportunities:
+Company: ${document.getElementById('t2-name').value}
+Website: ${document.getElementById('t2-url').value}
+Focus on: ${document.getElementById('t2-focus').value||'general AI readiness'}
+
+Return a structured report with:
+1. Tech Stack (inferred from website)
+2. Team size estimate + structure
+3. Current manual processes (3-5 specific examples)
+4. Recent growth signals (hiring, news, announcements)
+5. Specific AI automation opportunities (with $ value)
+6. Best AI service I could pitch them
+7. Decision maker title (CEO/Founder/Head of Ops)
+8. Personalized outreach angle (1 sentence)`,
+
+    t3:`Filter these leads against this ICP:
+Min score: ${document.getElementById('t3-minscore').value||7}
+Required industries: ${document.getElementById('t3-industries').value||'any'}
+Min team size: ${document.getElementById('t3-minsize').value||5}
+Excluded keywords: ${document.getElementById('t3-exclude').value||'none'}
+
+Return TWO tables: QUALIFIED (passed) and DISQUALIFIED (with reason).`,
+
+    t4:`Score all these leads from 1-10 using these criteria:
+${document.getElementById('t4-criteria').value||'overall fit for AI services'}
+
+Return TABLE:
+| Rank | Company | Score (1-10) | Reasoning (2-3 sentences) |
+
+Sort by score descending.`,
+
+    t5:`Enrich this company with decision-maker data:
+Company: ${document.getElementById('t5-company').value}
+Website: ${document.getElementById('t5-website').value}
+Target roles: ${document.getElementById('t5-roles').value}
+
+Return a contact card with:
+• 2-4 decision makers (name, title, LinkedIn URL pattern, email pattern)
+• Email format pattern (e.g. firstname@company.com)
+• 2-3 recent news items (last 6 months)
+• Best person to contact first
+• Outreach strategy (3 steps)`,
+
+    t6:`Write a personalized cold email:
+To: ${document.getElementById('t6-name').value} at ${document.getElementById('t6-company').value}
+Their pain: ${document.getElementById('t6-pain').value}
+My solution: ${document.getElementById('t6-solution').value}
+From: ${document.getElementById('t6-myname').value} at ${document.getElementById('t6-mycompany').value}
+
+Requirements:
+- Personalized opening referencing ${document.getElementById('t6-company').value} specifically
+- Mention their pain point (${document.getElementById('t6-pain').value})
+- Explain how ${document.getElementById('t6-solution').value} helps
+- Clear CTA (15-min call)
+- Under 150 words
+- Include 3 subject line options at the end`,
+
+    t7:`Create LinkedIn outreach for ${document.getElementById('t7-name').value} at ${document.getElementById('t7-company').value}.
+Their context: ${document.getElementById('t7-context').value}
+My value: ${document.getElementById('t7-value').value}
+
+Deliver:
+1) CONNECTION REQUEST NOTE (under 300 characters, easy to reply yes/no)
+2) INMAIL MESSAGE (under 100 words, professional, ends with a simple question)`,
+
+    t8:`Create a 3-email follow-up sequence for ${document.getElementById('t8-name').value} at ${document.getElementById('t8-company').value}.
+Topic: ${document.getElementById('t8-topic').value}
+Common objection: ${document.getElementById('t8-objection').value}
+
+3 emails, each under 100 words:
+• FOLLOW-UP #1 (Day 3): Add new value — share an insight or stat
+• FOLLOW-UP #2 (Day 10): Address the objection directly
+• BREAKUP EMAIL (Day 15): Light, low-pressure "I'll stop reaching out"`,
+
+    t9:`Find the top ${document.getElementById('t9-count').value||5} competitors of ${document.getElementById('t9-name').value} in ${document.getElementById('t9-industry').value||'their industry'}.
+
+Return TABLE:
+| # | Competitor | Website | Services | Key Weakness | AI Opportunity | Outreach Angle |
+
+Followed by:
+• Common pattern across competitors
+• Best positioning angle for our prospect`,
+
+    t10:`Create 3 AI service offers for ${document.getElementById('t10-company').value} in ${document.getElementById('t10-industry').value||'their industry'}.
+Their pain: ${document.getElementById('t10-pain').value}
+My specialty: ${document.getElementById('t10-specialty').value}
+Pricing: ${document.getElementById('t10-pricing').value}
+
+For each tier return:
+• Tier name & price
+• Deliverables (3-5 bullets)
+• ROI promise
+• Objection handler (1 line)
+• Best-fit scenario`
+  };
+  return {system:SYSTEM_PROMPT,user:map[tool]||''};
+}
+function copyPrompt(tool){
+  const p=buildPrompt(tool).user;
+  copyText(p);
+  log(`Copied Claude prompt for ${VIEW_TITLES[tool]}`);
+  toast('📋 Prompt copied — paste in claude.ai','ok');
+}
+
+/* ════════════════════════════════════════
+   SMART TEMPLATE GENERATORS (fallback)
+════════════════════════════════════════ */
+function genLeads(niche,region,min,max,count,pain){
+  const cities=region==='all US'||!region?['Austin, TX','Miami, FL','Denver, CO','Chicago, IL','Seattle, WA','Boston, MA','Atlanta, GA','San Diego, CA','Portland, OR','Nashville, TN']:[region];
+  const suffixes=['Group','Studio','Labs','Agency','Co','Partners','Creative','Media','Works','Hub','Collective','Digital','Brands'];
+  const bases=['BrightSpark','PixelForge','NovaPeak','QuantumLeap','Apex','Stellar','Cobalt','Lumen','Vertex','Drift','Crescent','Helio','Beacon','Mosaic','Riveter','Skyline'];
+  const pains=pain?pain.split(',').map(s=>s.trim()).filter(Boolean):['manual reporting','scaling content','client onboarding','lead follow-up'];
+  let out='Sample Template Output\nReplace with AI mode for real research\n\n';
+  out+='# | Company | Website | Location | Size | Industry | AI Opportunity | Score\n';
+  out+='-'.repeat(95)+'\n';
+  for(let i=1;i<=count;i++){
+    const name=bases[i%bases.length]+' '+suffixes[i%suffixes.length];
+    const city=cities[i%cities.length];
+    const size=min+Math.floor(Math.random()*(max-min+1));
+    const ind=niche||'marketing agency';
+    const p=pains[i%pains.length];
+    const sc=5+Math.floor(Math.random()*6);
+    const site=name.toLowerCase().replace(/\s+/g,'')+'.com';
+    out+=String(i).padEnd(3)+' | '+name.padEnd(22)+' | '+site.padEnd(28)+' | '+city.padEnd(14)+' | '+String(size).padEnd(5)+' | '+ind.padEnd(20)+' | '+p+' (offer AI automation) | '+sc+'/10\n';
+  }
+  out+='\n⚠️ These are SAMPLE names. Add your API key in ⚙️ Settings to get REAL researched leads.';
+  return out;
+}
+function genAnalysis(name,url,focus){
+  return `# ${name} — Sample Analysis Report
+⚠️ Template mode. Add API key for real research.
+
+URL: ${url}
+Focus: ${focus}
+
+## Tech Stack (typical agency setup)
+• CMS: WordPress / Webflow / custom
+• CRM: HubSpot / Salesforce / Pipedrive
+• Email: Mailchimp / ConvertKit
+• Analytics: GA4 + Hotjar
+
+## Team & Structure
+• Estimated 12-30 employees
+• Founders visible on LinkedIn
+
+## AI Opportunities (typical)
+1. AI-generated weekly reports — $2K/mo
+2. AI content drafting pipeline — $4K/mo
+3. Lead scoring + auto-routing — $1.5K/mo
+
+Add API key in ⚙️ Settings for real, specific insights.`;
+}
+function genEnrichment(company,website,roles){
+  return `# ${company} — Sample Enrichment
+⚠️ Template mode. Add API key for real contact data.
+Roles targeted: ${roles}
+For real names, emails, LinkedIn → enable AI in ⚙️ Settings.`;
+}
+function genEmail(company,name,pain,sol,me,myco){
+  return `Subject: Quick idea for ${company}
+
+Hi ${name||'there'},
+
+I noticed ${company} handles a lot of ${pain||'manual work'} — that's the kind of thing where AI agents can save 15-20 hours/week.
+
+Specifically, I help teams like yours with ${sol||'AI automation'} — usually paying for itself in month one.
+
+Worth a 15-min call this week?
+
+Best,
+${me}
+${myco}
+
+---
+⚠️ Template version. Enable AI in ⚙️ Settings for more personalized output.`;
+}
+function genLinkedIn(name,company,ctx,val){
+  return `🔗 CONNECTION REQUEST:
+Hi ${name||'there'} — I help ${company||'teams'}-type operations ${val||'cut manual work with AI'}. Would love to connect!
+
+📧 INMAIL:
+Hi ${name||'there'},
+Noticed you're focused on ${ctx||'scaling'} — that's exactly where AI delivers ROI.
+Worth a 10-min call this week?
+— [Your Name]
+
+---
+⚠️ Template version. Enable AI in ⚙️ Settings for personalized output.`;
+}
+function genSequence(name,company,topic,objection){
+  return `📧 FOLLOW-UP #1 (Day 3 — Add Value):
+Subject: Quick insight on ${topic}
+Hi ${name||'there'},
+Came across this stat: agencies using AI for ${topic} save ~14 hrs/week.
+If it resonates, happy to share what they did.
+— [Your Name]
+
+📧 FOLLOW-UP #2 (Day 10 — Handle Objection):
+Subject: "${objection}"
+Hi ${name||'there'},
+The AI setup takes 5 days, runs itself after. No management needed.
+Worth a 10-min call?
+— [Your Name]
+
+📧 BREAKUP EMAIL (Day 15 — Low Pressure):
+Subject: Should I close your file?
+Hi ${name||'there'},
+Reached out a few times — clearly timing isn't right. I'll stop here.
+If things change, my door's open.
+— [Your Name]
+
+---
+⚠️ Template version. Enable AI in ⚙️ Settings for personalized sequence.`;
+}
+function genCompetitor(name,industry,count){
+  return `# Top ${count} Competitors of ${name} (${industry})
+⚠️ Template mode. Add API key for real research.
+
+Sample competitors + weaknesses structure ready.
+Enable AI in ⚙️ Settings for live, researched data.`;
+}
+function genOffers(company,industry,pain,specialty,pricing){
+  const p=pricing.split(',').map(s=>s.trim());
+  return `# 3 AI Service Offers for ${company}
+⚠️ Template version. Add API key for personalized tiers.
+
+🥉 TIER 1 — ${p[0]||'$1,500/mo'} — Quick Wins
+🥈 TIER 2 — ${p[1]||'$5,000/mo'} — Growth Engine
+🥇 TIER 3 — ${p[2]||'$15,000/mo'} — Full AI Department
+
+Enable AI in ⚙️ Settings for full deliverables, ROI, objection handlers per tier.`;
+}
+
+/* ════════════════════════════════════════
+   TOOL RUNNERS — use AI if available, else template
+════════════════════════════════════════ */
+async function runT1(){
+  const btn=document.getElementById('btn-t1');
+  const out=document.getElementById('t1-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const inputs={niche:document.getElementById('t1-niche').value.trim()||'marketing agencies',region:document.getElementById('t1-region').value.trim()||'all US',min:+document.getElementById('t1-min').value||5,max:+document.getElementById('t1-max').value||200,count:Math.min(50,Math.max(1,+document.getElementById('t1-count').value||20)),pain:document.getElementById('t1-pain').value.trim()};
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Asking AI to research '+inputs.count+' leads...';
+      const p=buildPrompt('t1');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genLeads(inputs.niche,inputs.region,inputs.min,inputs.max,inputs.count,inputs.pain);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    document.getElementById('t1-output-mode').textContent=profile.provider!=='none'&&profile.apikey?'🤖 AI':'⚡ Template';
+    // parse & save leads
+    const lines=text.split('\n').filter(l=>l.includes('|')&&!l.includes('---')&&!l.startsWith('-')&&!l.startsWith('#')&&!/^\s*\|?\s*#\s*\|/.test(l));
+    const newLeads=[];
+    lines.forEach(line=>{
+      const parts=line.split('|').map(s=>s.trim()).filter(Boolean);
+      if(parts.length>=4&&parts[1]&&parts[1].length>2){
+        const score=parseInt(parts.find(p=>/^\d+$/.test(p)&&+p<=10)||'5')||5;
+        const name=parts[1];
+        if(name&&!/^(company|name|score|industry|size|location|website|opp|#|table|rank|competitor|services|weakness)$/i.test(name)){
+          newLeads.push({id:uid(),company:name,website:parts[2]||'',location:parts[3]||'',size:parseInt(parts[4])||10,industry:inputs.niche,opportunity:parts[6]||'AI automation',score,status:'researched',createdAt:new Date().toISOString()});
+        }
+      }
+    });
+    const existing=new Set(state.leads.map(l=>l.company.toLowerCase()));
+    newLeads.forEach(l=>{if(!existing.has(l.company.toLowerCase()))state.leads.push(l);});
+    saveState();renderStats();
+    document.getElementById('t1-info').textContent=`${newLeads.length} leads parsed · ${state.leads.length} total`;
+    renderT1Table();
+    log(`Generated ${newLeads.length} leads via ${profile.provider!=='none'?'AI':'template'}`);
+    toast(`✅ ${newLeads.length} leads ready`,'ok');
+  }catch(e){
+    out.textContent='❌ Error: '+e.message+'\n\nFalling back to template mode...';
+    const text=genLeads(inputs.niche,inputs.region,inputs.min,inputs.max,inputs.count,inputs.pain);
+    out.textContent=text;out.classList.remove('empty');
+    toast('❌ AI failed — using template','err',4000);
+  }finally{
+    btn.disabled=false;btn.innerHTML='✨ Generate Leads';
+  }
+}
+
+function renderT1Table(){
+  const tb=document.querySelector('#t1-table tbody');
+  tb.innerHTML=state.leads.slice(0,30).map((l,i)=>{
+    const sc=l.score||0;
+    const scCl=sc>=8?'score-high':sc>=5?'score-mid':'score-low';
+    return `<tr><td>${i+1}</td><td><strong style="color:var(--text)">${esc(l.company)}</strong></td><td><a href="https://${esc(l.website)}" target="_blank" style="color:var(--cyan)">${esc(l.website)}</a></td><td>${esc(l.location)}</td><td>${l.size}</td><td>${esc(l.opportunity)}</td><td><span class="score-pill ${scCl}">${sc}/10</span></td><td><button class="btn btn-sm btn-green" onclick="addLeadToCRM('${l.id}')">+ CRM</button></td></tr>`;
+  }).join('')||'<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:20px">No leads yet — click Generate.</td></tr>';
+}
+function addLeadToCRM(id){toast('✅ Lead is in CRM','ok');go('crm');}
+
+async function runT2(){
+  const btn=document.getElementById('btn-t2');
+  const out=document.getElementById('t2-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const name=document.getElementById('t2-name').value.trim()||'[Company]';
+  const url=document.getElementById('t2-url').value.trim()||'https://';
+  const focus=document.getElementById('t2-focus').value.trim();
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Researching '+name+'...';
+      const p=buildPrompt('t2');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genAnalysis(name,url,focus);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.analyses.unshift({id:uid(),name,url,output:text,createdAt:new Date().toLocaleString()});
+    saveState();
+    document.getElementById('t2-info').textContent=`${state.analyses.length} analyses saved`;
+    renderT2List();
+    log(`Analyzed "${name}" via ${profile.provider!=='none'?'AI':'template'}`);
+    toast(`✅ Analysis complete`,'ok');
+  }catch(e){
+    out.textContent='❌ '+e.message;toast('❌ AI failed','err');
+  }finally{
+    btn.disabled=false;btn.innerHTML='🔬 Analyze';
+  }
+}
+function renderT2List(){
+  document.getElementById('t2-list').innerHTML=state.analyses.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">${esc(a.name)}</div><div class="lead-meta">${esc(a.url)} · ${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT2('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT2('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No analyses yet.</div>';
+}
+function loadT2(id){const a=state.analyses.find(x=>x.id===id);if(a){document.getElementById('t2-output').textContent=a.output;document.getElementById('t2-output').classList.remove('empty');document.getElementById('t2-name').value=a.name;document.getElementById('t2-url').value=a.url;}}
+function delT2(id){state.analyses=state.analyses.filter(x=>x.id!==id);saveState();renderT2List();document.getElementById('t2-info').textContent=`${state.analyses.length} analyses saved`;}
+
+function runT3(){
+  const minScore=+document.getElementById('t3-minscore').value||7;
+  const industries=document.getElementById('t3-industries').value.toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+  const minSize=+document.getElementById('t3-minsize').value||0;
+  const exclude=document.getElementById('t3-exclude').value.toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+  const qual=[];const disq=[];
+  state.leads.forEach(l=>{
+    let pass=(l.score||0)>=minScore;
+    if(pass&&industries.length)pass=industries.some(i=>(l.industry||'').toLowerCase().includes(i));
+    if(pass&&minSize)pass=(l.size||0)>=minSize;
+    if(pass&&exclude.length)pass=!exclude.some(e=>((l.company||'')+' '+(l.opportunity||'')+' '+(l.industry||'')).toLowerCase().includes(e));
+    if(pass)qual.push(l);else disq.push(l);
+  });
+  qual.sort((a,b)=>(b.score||0)-(a.score||0));
+  const tb=document.querySelector('#t3-table tbody');
+  tb.innerHTML=qual.slice(0,30).map((l,i)=>`<tr><td>${i+1}</td><td><strong style="color:var(--text)">${esc(l.company)}</strong></td><td>${esc(l.industry)}</td><td>${l.size}</td><td><span class="score-pill ${(l.score||0)>=8?'score-high':(l.score||0)>=5?'score-mid':'score-low'}">${l.score}/10</span></td><td><button class="btn btn-sm btn-green" onclick="qualifyLead('${l.id}')">→ Qualified</button></td></tr>`).join('')||'<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:20px">No leads qualify. Adjust ICP.</td></tr>';
+  document.getElementById('t3-info').textContent=`${qual.length} qualified · ${disq.length} filtered`;
+  log(`Qualification: ${qual.length} qualified of ${state.leads.length}`);
+  toast(`⚡ ${qual.length} qualified · ${disq.length} filtered`,'ok');
+}
+function qualifyLead(id){setLeadStage(id,'qualified');runT3();}
+function saveQualified(){
+  const minScore=+document.getElementById('t3-minscore').value||7;
+  const industries=document.getElementById('t3-industries').value.toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+  const minSize=+document.getElementById('t3-minsize').value||0;
+  let n=0;
+  state.leads.forEach(l=>{
+    if((l.score||0)>=minScore&&(!industries.length||industries.some(i=>(l.industry||'').toLowerCase().includes(i)))&&(l.size||0)>=minSize&&l.status==='researched'){
+      l.status='qualified';n++;
+    }
+  });
+  saveState();renderStats();runT3();
+  log(`Bulk qualified ${n} leads`);toast(`💾 ${n} → Qualified`,'ok');
+}
+
+function runT4(){
+  if(!state.leads.length){toast('Run Lead Research first','err');return;}
+  const tb=document.querySelector('#t4-table tbody');
+  const scored=state.leads.map(l=>{
+    let s=l.score||5;
+    let reason=[];
+    if((l.size||0)>=50){s+=1;reason.push('large team = bigger budget');}
+    if((l.size||0)<10){s-=1;reason.push('small team, slower decisions');}
+    if((l.opportunity||'').toLowerCase().includes('reporting')){s+=1;reason.push('reporting pain = clear ROI');}
+    if((l.opportunity||'').toLowerCase().includes('content')){s+=1;reason.push('content = high AI leverage');}
+    if((l.industry||'').toLowerCase().includes('marketing')){s+=1;reason.push('AI-friendly industry');}
+    s=Math.min(10,Math.max(1,s));
+    return {...l,score:s,reason:reason.join('; ')||'baseline fit'};
+  });
+  scored.sort((a,b)=>b.score-a.score);
+  state.leads.forEach(l=>{const u=scored.find(x=>x.id===l.id);if(u)l.score=u.score;});
+  saveState();renderStats();
+  tb.innerHTML=scored.slice(0,30).map((l,i)=>{
+    const sc=l.score;const scCl=sc>=8?'score-high':sc>=5?'score-mid':'score-low';
+    return `<tr><td>#${i+1}</td><td><strong style="color:var(--text)">${esc(l.company)}</strong></td><td><span class="score-pill ${scCl}">${sc}/10</span></td><td style="color:var(--mid)">${esc(l.reason)}</td></tr>`;
+  }).join('');
+  document.getElementById('t4-info').textContent=`${scored.length} leads scored`;
+  log(`Re-scored ${scored.length} leads`);toast(`🎯 All leads re-scored`,'ok');
+}
+
+async function runT5(){
+  const btn=document.getElementById('btn-t5');
+  const out=document.getElementById('t5-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const company=document.getElementById('t5-company').value.trim()||'[Company]';
+  const website=document.getElementById('t5-website').value.trim()||'https://example.com';
+  const roles=document.getElementById('t5-roles').value;
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Enriching '+company+'...';
+      const p=buildPrompt('t5');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genEnrichment(company,website,roles);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.enrichments.unshift({id:uid(),company,output:text,createdAt:new Date().toLocaleString()});
+    saveState();
+    document.getElementById('t5-info').textContent=`${state.enrichments.length} enrichments saved`;
+    renderT5List();
+    log(`Enriched "${company}"`);toast(`📊 Enrichment complete`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='📊 Enrich';}
+}
+function renderT5List(){
+  document.getElementById('t5-list').innerHTML=state.enrichments.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">${esc(a.company)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT5('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT5('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No enrichments yet.</div>';
+}
+function loadT5(id){const a=state.enrichments.find(x=>x.id===id);if(a){document.getElementById('t5-output').textContent=a.output;document.getElementById('t5-output').classList.remove('empty');document.getElementById('t5-company').value=a.company;}}
+function delT5(id){state.enrichments=state.enrichments.filter(x=>x.id!==id);saveState();renderT5List();document.getElementById('t5-info').textContent=`${state.enrichments.length} enrichments saved`;}
+
+async function runT6(){
+  const btn=document.getElementById('btn-t6');
+  const out=document.getElementById('t6-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const company=document.getElementById('t6-company').value.trim();
+  if(!company){toast('Enter company','err');btn.disabled=false;btn.innerHTML='✉️ Generate Email';return;}
+  const name=document.getElementById('t6-name').value.trim();
+  const pain=document.getElementById('t6-pain').value.trim();
+  const sol=document.getElementById('t6-solution').value.trim();
+  const me=document.getElementById('t6-myname').value.trim();
+  const myco=document.getElementById('t6-mycompany').value.trim();
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Drafting email to '+company+'...';
+      const p=buildPrompt('t6');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genEmail(company,name,pain,sol,me,myco);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.emails.unshift({id:uid(),company,output:text,createdAt:new Date().toLocaleString()});
+    const lead=state.leads.find(l=>l.company.toLowerCase()===company.toLowerCase());
+    if(lead&&lead.status==='qualified'){lead.status='contacted';renderStats();}
+    saveState();
+    document.getElementById('t6-info').textContent=`${state.emails.length} emails saved`;
+    renderT6List();
+    log(`Generated email for "${company}"`);toast(`✉️ Email ready`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='✉️ Generate Email';}
+}
+function copyT6(){copyText(document.getElementById('t6-output').textContent);}
+function renderT6List(){
+  document.getElementById('t6-list').innerHTML=state.emails.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">📧 ${esc(a.company)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT6('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT6('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No emails yet.</div>';
+}
+function loadT6(id){const a=state.emails.find(x=>x.id===id);if(a){document.getElementById('t6-output').textContent=a.output;document.getElementById('t6-output').classList.remove('empty');document.getElementById('t6-company').value=a.company;}}
+function delT6(id){state.emails=state.emails.filter(x=>x.id!==id);saveState();renderT6List();document.getElementById('t6-info').textContent=`${state.emails.length} emails saved`;}
+
+async function runT7(){
+  const btn=document.getElementById('btn-t7');
+  const out=document.getElementById('t7-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const name=document.getElementById('t7-name').value.trim();
+  const company=document.getElementById('t7-company').value.trim();
+  if(!company){toast('Enter company','err');btn.disabled=false;btn.innerHTML='💼 Generate';return;}
+  const ctx=document.getElementById('t7-context').value.trim();
+  const val=document.getElementById('t7-value').value.trim();
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Drafting LinkedIn message...';
+      const p=buildPrompt('t7');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genLinkedIn(name,company,ctx,val);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.linkedins.unshift({id:uid(),company,output:text,createdAt:new Date().toLocaleString()});
+    const lead=state.leads.find(l=>l.company.toLowerCase()===company.toLowerCase());
+    if(lead&&lead.status==='qualified'){lead.status='contacted';renderStats();}
+    saveState();
+    document.getElementById('t7-info').textContent=`${state.linkedins.length} messages saved`;
+    renderT7List();
+    log(`Generated LinkedIn for "${company}"`);toast(`💼 LinkedIn ready`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='💼 Generate';}
+}
+function copyT7(){copyText(document.getElementById('t7-output').textContent);}
+function renderT7List(){
+  document.getElementById('t7-list').innerHTML=state.linkedins.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">💼 ${esc(a.company)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT7('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT7('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No messages yet.</div>';
+}
+function loadT7(id){const a=state.linkedins.find(x=>x.id===id);if(a){document.getElementById('t7-output').textContent=a.output;document.getElementById('t7-output').classList.remove('empty');document.getElementById('t7-company').value=a.company;}}
+function delT7(id){state.linkedins=state.linkedins.filter(x=>x.id!==id);saveState();renderT7List();document.getElementById('t7-info').textContent=`${state.linkedins.length} messages saved`;}
+
+async function runT8(){
+  const btn=document.getElementById('btn-t8');
+  const out=document.getElementById('t8-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const name=document.getElementById('t8-name').value.trim();
+  const company=document.getElementById('t8-company').value.trim();
+  if(!company){toast('Enter company','err');btn.disabled=false;btn.innerHTML='📅 Generate Sequence';return;}
+  const topic=document.getElementById('t8-topic').value.trim();
+  const objection=document.getElementById('t8-objection').value.trim();
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Building 3-email sequence...';
+      const p=buildPrompt('t8');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genSequence(name,company,topic,objection);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.sequences.unshift({id:uid(),company,output:text,createdAt:new Date().toLocaleString()});
+    saveState();
+    document.getElementById('t8-info').textContent=`${state.sequences.length} sequences saved`;
+    renderT8List();
+    log(`Generated sequence for "${company}"`);toast(`📅 Sequence ready`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='📅 Generate Sequence';}
+}
+function copyT8(){copyText(document.getElementById('t8-output').textContent);}
+function renderT8List(){
+  document.getElementById('t8-list').innerHTML=state.sequences.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">📅 ${esc(a.company)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT8('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT8('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No sequences yet.</div>';
+}
+function loadT8(id){const a=state.sequences.find(x=>x.id===id);if(a){document.getElementById('t8-output').textContent=a.output;document.getElementById('t8-output').classList.remove('empty');document.getElementById('t8-company').value=a.company;}}
+function delT8(id){state.sequences=state.sequences.filter(x=>x.id!==id);saveState();renderT8List();document.getElementById('t8-info').textContent=`${state.sequences.length} sequences saved`;}
+
+async function runT9(){
+  const btn=document.getElementById('btn-t9');
+  const out=document.getElementById('t9-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const name=document.getElementById('t9-name').value.trim()||'[Company]';
+  const industry=document.getElementById('t9-industry').value.trim()||'[industry]';
+  const count=Math.min(10,Math.max(1,+document.getElementById('t9-count').value||5));
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Researching competitors...';
+      const p=buildPrompt('t9');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genCompetitor(name,industry,count);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.competitors.unshift({id:uid(),name,output:text,createdAt:new Date().toLocaleString()});
+    saveState();
+    document.getElementById('t9-info').textContent=`${state.competitors.length} reports saved`;
+    renderT9List();
+    log(`Mapped competitors for "${name}"`);toast(`🕵️ ${count} competitors mapped`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='🕵️ Research';}
+}
+function renderT9List(){
+  document.getElementById('t9-list').innerHTML=state.competitors.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">🕵️ ${esc(a.name)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT9('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT9('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No reports yet.</div>';
+}
+function loadT9(id){const a=state.competitors.find(x=>x.id===id);if(a){document.getElementById('t9-output').textContent=a.output;document.getElementById('t9-output').classList.remove('empty');document.getElementById('t9-name').value=a.name;}}
+function delT9(id){state.competitors=state.competitors.filter(x=>x.id!==id);saveState();renderT9List();document.getElementById('t9-info').textContent=`${state.competitors.length} reports saved`;}
+
+async function runT10(){
+  const btn=document.getElementById('btn-t10');
+  const out=document.getElementById('t10-output');
+  btn.disabled=true;btn.innerHTML='<span class="loading-spinner"></span> Working...';
+  const company=document.getElementById('t10-company').value.trim()||'[Company]';
+  const industry=document.getElementById('t10-industry').value.trim()||'[industry]';
+  const pain=document.getElementById('t10-pain').value.trim();
+  const specialty=document.getElementById('t10-specialty').value.trim();
+  const pricing=document.getElementById('t10-pricing').value;
+  try{
+    let text;
+    if(profile.provider!=='none'&&profile.apikey){
+      out.textContent='⏳ Building 3-tier offers...';
+      const p=buildPrompt('t10');
+      text=await callAI(p.user,p.system);
+    } else {
+      text=genOffers(company,industry,pain,specialty,pricing);
+    }
+    out.textContent=text;out.classList.remove('empty');
+    state.offers.unshift({id:uid(),company,output:text,createdAt:new Date().toLocaleString()});
+    saveState();
+    document.getElementById('t10-info').textContent=`${state.offers.length} offers saved`;
+    renderT10List();
+    log(`Generated offers for "${company}"`);toast(`💰 3-tier offers ready`,'ok');
+  }catch(e){out.textContent='❌ '+e.message;toast('❌ AI failed','err');}
+  finally{btn.disabled=false;btn.innerHTML='💰 Generate Offers';}
+}
+function copyT10(){copyText(document.getElementById('t10-output').textContent);}
+function renderT10List(){
+  document.getElementById('t10-list').innerHTML=state.offers.slice(0,15).map(a=>`<div class="lead-item"><div class="lead-info"><div class="lead-name">💰 ${esc(a.company)}</div><div class="lead-meta">${esc(a.createdAt)}</div></div><div class="lead-actions"><button class="btn btn-sm btn-sec" onclick="loadT10('${a.id}')">View</button><button class="btn btn-sm btn-danger" onclick="delT10('${a.id}')">×</button></div></div>`).join('')||'<div style="text-align:center;color:var(--dim);padding:20px;font-size:12px">No offers yet.</div>';
+}
+function loadT10(id){const a=state.offers.find(x=>x.id===id);if(a){document.getElementById('t10-output').textContent=a.output;document.getElementById('t10-output').classList.remove('empty');document.getElementById('t10-company').value=a.company;}}
+function delT10(id){state.offers=state.offers.filter(x=>x.id!==id);saveState();renderT10List();document.getElementById('t10-info').textContent=`${state.offers.length} offers saved`;}
+
+let pasteTarget=null;
+function pasteT1(){pasteTarget='t1';openModal('modal-paste');document.getElementById('paste-text').value='';}
+function pasteT2(){pasteTarget='t2';openModal('modal-paste');document.getElementById('paste-text').value='';}
+function pasteT5(){pasteTarget='t5';openModal('modal-paste');document.getElementById('paste-text').value='';}
+function pasteT9(){pasteTarget='t9';openModal('modal-paste');document.getElementById('paste-text').value='';}
+function confirmPaste(){
+  const text=document.getElementById('paste-text').value.trim();
+  if(!text){toast('Paste something first','err');return;}
+  if(pasteTarget==='t1'){
+    const lines=text.split('\n').filter(l=>l.includes('|'));
+    let added=0;
+    lines.forEach(line=>{
+      const parts=line.split('|').map(s=>s.trim()).filter(Boolean);
+      if(parts.length>=4&&parts[1]&&parts[1].length>2&&!/^(company|name|industry|size|location|website|score|opp|#|table)$/i.test(parts[1])){
+        const score=parseInt(parts.find(p=>/^\d+$/.test(p)&&+p<=10)||'5')||5;
+        if(!state.leads.some(l=>l.company.toLowerCase()===parts[1].toLowerCase())){
+          state.leads.push({id:uid(),company:parts[1],website:parts[2]||'',location:parts[3]||'',size:parseInt(parts[4])||10,industry:parts.find(p=>['marketing','agency','tech','saas','real estate','law','consulting','healthcare'].some(k=>p.toLowerCase().includes(k)))||'general',opportunity:parts[6]||parts[5]||'AI automation',score,status:'researched',createdAt:new Date().toISOString()});
+          added++;
+        }
+      }
+    });
+    saveState();renderStats();renderT1Table();
+    toast(`💾 ${added} leads imported`,'ok');log(`Imported ${added} leads from paste`);
+  } else {
+    const map={t2:{arr:state.analyses,name:document.getElementById('t2-name').value||'Pasted analysis',key:'t2'},t5:{arr:state.enrichments,name:document.getElementById('t5-company').value||'Pasted enrichment',key:'t5'},t9:{arr:state.competitors,name:document.getElementById('t9-name').value||'Pasted research',key:'t9'}};
+    const m=map[pasteTarget];
+    if(m){
+      m.arr.unshift({id:uid(),name:m.name,output:text,createdAt:new Date().toLocaleString()});
+      saveState();
+      document.getElementById(m.key+'-output').textContent=text;document.getElementById(m.key+'-output').classList.remove('empty');
+      const ren={t2:renderT2List,t5:renderT5List,t9:renderT9List};
+      ren[pasteTarget]();
+      toast(`💾 Saved to ${pasteTarget.toUpperCase()} library`,'ok');
+      log(`Imported Claude output for ${pasteTarget}`);
+    }
+  }
+  closeModal('modal-paste');
+}
+
+function exportLeadsCSV(){
+  if(!state.leads.length){toast('No leads to export','err');return;}
+  let csv='Company,Website,Location,Size,Industry,Opportunity,Score,Status,Created\n';
+  state.leads.forEach(l=>{csv+=`"${l.company}","${l.website}","${l.location}",${l.size},"${l.industry}","${l.opportunity}",${l.score},"${l.status}","${l.createdAt}"\n`;});
+  download('leads.csv',csv,'text/csv');
+  toast('📥 Leads exported','ok');log('Exported leads CSV');
+}
+function exportAll(){
+  const data=JSON.stringify({state,profile},null,2);
+  download('ai-employee-backup.json',data,'application/json');
+  toast('📥 Backup exported','ok');log('Exported workspace backup');
+}
+function download(name,content,type){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
+
+function renderAll(){
+  renderStats();renderActivity();
+  renderT1Table();renderT2List();renderT5List();
+  renderT6List();renderT7List();renderT8List();
+  renderT9List();renderT10List();
+  updateUIBadges();
+}
+
+loadState();renderAll();
+if(!state.activity.length)log('Workspace ready. Open ⚙️ Settings to set your profile & AI key.');
+
+// Show settings on first run if no profile yet
+if(!profile.myname&&!profile.niche){
+  setTimeout(()=>{
+    toast('👋 First time? Open ⚙️ Settings to set your profile','ok',5000);
+  },500);
+}
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a1577c9bf87e4455',t:'MTc4MzA5ODQ0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
